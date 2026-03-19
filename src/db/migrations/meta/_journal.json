@@ -8,6 +8,13 @@
       "when": 1773935191860,
       "tag": "0000_cool_chronomancer",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1773936177416,
+      "tag": "0001_lucky_skaar",
+      "breakpoints": true
     }
   ]
 }
