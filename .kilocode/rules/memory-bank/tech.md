@@ -13,6 +13,7 @@
 | React Hook Form | 7.x     | Form handling                         |
 | Zod             | 4.x     | Schema validation                     |
 | Recharts        | 3.x     | Charts (optional skill visualization) |
+| Drizzle ORM     | 0.45.x  | Database ORM for SQLite               |
 | Bun             | Latest  | Package manager & runtime             |
 
 ## Development Environment
@@ -31,6 +32,8 @@ bun build          # Production build
 bun start          # Start production server
 bun lint           # Run ESLint
 bun typecheck      # Run TypeScript type checking
+bun db:generate    # Generate Drizzle migrations
+bun db:migrate     # Run database migrations
 ```
 
 ## Project Configuration
@@ -69,6 +72,8 @@ bun typecheck      # Run TypeScript type checking
   "framer-motion": "^12.27.0",
   "react-hook-form": "^7.71.1",
   "@hookform/resolvers": "^5.2.2",
+  "@kilocode/app-builder-db": "github:Kilo-Org/app-builder-db#main",
+  "drizzle-orm": "^0.45.1",
   "zod": "^4.3.5",
   "recharts": "^3.6.0",
   "clsx": "^2.1.1",
@@ -86,6 +91,7 @@ bun typecheck      # Run TypeScript type checking
   "@types/react-dom": "^19.2.3",
   "@tailwindcss/postcss": "^4.1.17",
   "tailwindcss": "^4.1.17",
+  "drizzle-kit": "^0.31.10",
   "eslint": "^9.39.1",
   "eslint-config-next": "^16.0.0"
 }
@@ -98,6 +104,7 @@ bun typecheck      # Run TypeScript type checking
 ├── .gitignore              # Git ignore rules
 ├── package.json            # Dependencies and scripts
 ├── bun.lock                # Bun lockfile
+├── drizzle.config.ts       # Drizzle ORM configuration
 ├── next.config.ts          # Next.js configuration
 ├── tsconfig.json           # TypeScript configuration
 ├── postcss.config.mjs      # PostCSS (Tailwind) config
@@ -107,25 +114,34 @@ bun typecheck      # Run TypeScript type checking
 │   └── projects/           # Project screenshots
 └── src/                    # Source code
     ├── app/                # Next.js App Router
+    │   └── api/            # API routes (contact, pdf)
     ├── components/         # React components
     ├── config/             # Site configuration
     ├── data/               # User content data files
+    ├── db/                 # Database schema, client, migrations
     └── lib/                # Utilities
 ```
 
 ## Technical Constraints
 
-### Static by Default
+### Static by Default with Backend Support
 
-- All content is static in data files
-- No database required for basic use
-- Can add database via recipe if needed
+- All resume content is static in data files
+- SQLite database for contact form message persistence
+- Backend runs in sandbox environment
 
 ### API Routes Available
 
-- Contact form handler
+- Contact form handler (POST/GET) - stores messages in SQLite database
 - PDF/text/JSON export endpoints
 - Can be extended for additional functionality
+
+### Database
+
+- SQLite database via `@kilocode/app-builder-db`
+- Drizzle ORM for schema and queries
+- Migrations in `src/db/migrations/`
+- Contact messages table: `contact_messages`
 
 ### Browser Support
 
