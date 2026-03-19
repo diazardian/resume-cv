@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/db';
+import { contactMessages } from '@/db/schema';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { name, email, subject, message } = body;
 
-    // Validate required fields
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
         { error: 'All fields are required' },
@@ -13,16 +14,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Here you would typically:
-    // 1. Send an email using a service like SendGrid, Resend, or Nodemailer
-    // 2. Store the message in a database
-    // 3. Send a notification to Slack/Discord
-    
-    // For now, we'll just log and return success
-    console.log('Contact form submission:', { name, email, subject, message });
-
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await db.insert(contactMessages).values({
+      name,
+      email,
+      subject,
+      message,
+    });
 
     return NextResponse.json(
       { success: true, message: 'Message sent successfully' },
@@ -32,6 +29,23 @@ export async function POST(request: NextRequest) {
     console.error('Contact form error:', error);
     return NextResponse.json(
       { error: 'Failed to process request' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const messages = await db
+      .select()
+      .from(contactMessages)
+      .orderBy(contactMessages.createdAt);
+
+    return NextResponse.json({ messages });
+  } catch (error) {
+    console.error('Failed to fetch messages:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch messages' },
       { status: 500 }
     );
   }
